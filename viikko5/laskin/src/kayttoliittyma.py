@@ -2,10 +2,6 @@ from enum import Enum
 from tkinter import ttk, constants, StringVar
 
 
-from enum import Enum
-from tkinter import ttk, constants, StringVar
-
-
 class Komento(Enum):
     SUMMA = 1
     EROTUS = 2
@@ -17,9 +13,9 @@ class Kayttoliittyma:
     def __init__(self, sovelluslogiikka, root):
         self._sovelluslogiikka = sovelluslogiikka
         self._root = root
-        self._edellinen_komento = None  # Muistaa edellisen suoritetun komennon
+        self._edellinen_komento = None  
 
-        # Komentojen määrittely
+
         self._komennot = {
             Komento.SUMMA: Summa(self._sovelluslogiikka, self._lue_syote),
             Komento.EROTUS: Erotus(self._sovelluslogiikka, self._lue_syote),
@@ -67,22 +63,20 @@ class Kayttoliittyma:
         self._kumoa_painike.grid(row=2, column=3)
 
     def _lue_syote(self):
-        """Lukee syötteen tekstikentästä."""
         try:
             return int(self._syote_kentta.get())
         except ValueError:
             return 0
 
     def _suorita_komento(self, komento):
-        """Suorittaa annetun komennon."""
         if komento == Komento.KUMOA and self._edellinen_komento:
             self._edellinen_komento.kumoa()
-            self._edellinen_komento = None  # Kumoa voi suorittaa vain kerran
+            self._edellinen_komento = None  
             self._kumoa_painike["state"] = constants.DISABLED
         elif komento in self._komennot:
             komento_olio = self._komennot[komento]
             komento_olio.suorita()
-            self._edellinen_komento = komento_olio  # Tallenna viimeisin komento
+            self._edellinen_komento = komento_olio  
             self._kumoa_painike["state"] = constants.NORMAL
 
         if self._sovelluslogiikka.arvo() == 0:
@@ -94,7 +88,7 @@ class Kayttoliittyma:
         self._arvo_var.set(self._sovelluslogiikka.arvo())
 
 
-# Komentoluokat
+
 class Summa:
     def __init__(self, sovelluslogiikka, syotteen_lukija):
         self._sovelluslogiikka = sovelluslogiikka
@@ -102,13 +96,11 @@ class Summa:
         self._edellinen_arvo = None
 
     def suorita(self):
-        """Suorittaa summan lisäämällä annetun arvon."""
         self._edellinen_arvo = self._sovelluslogiikka.arvo()
         arvo = self._syotteen_lukija()
         self._sovelluslogiikka.plus(arvo)
 
     def kumoa(self):
-        """Kumoaa summan laskemisen."""
         if self._edellinen_arvo is not None:
             self._sovelluslogiikka.aseta_arvo(self._edellinen_arvo)
 
@@ -120,13 +112,11 @@ class Erotus:
         self._edellinen_arvo = None
 
     def suorita(self):
-        """Suorittaa erotuksen vähentämällä annetun arvon."""
         self._edellinen_arvo = self._sovelluslogiikka.arvo()
         arvo = self._syotteen_lukija()
         self._sovelluslogiikka.miinus(arvo)
 
     def kumoa(self):
-        """Kumoaa erotuksen laskemisen."""
         if self._edellinen_arvo is not None:
             self._sovelluslogiikka.aseta_arvo(self._edellinen_arvo)
 
@@ -137,11 +127,9 @@ class Nollaus:
         self._edellinen_arvo = None
 
     def suorita(self):
-        """Nollaa laskimen arvon."""
         self._edellinen_arvo = self._sovelluslogiikka.arvo()
         self._sovelluslogiikka.nollaa()
 
     def kumoa(self):
-        """Kumoaa nollauksen."""
         if self._edellinen_arvo is not None:
             self._sovelluslogiikka.aseta_arvo(self._edellinen_arvo)
